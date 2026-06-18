@@ -98,6 +98,7 @@ h1 {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
 }
 
 .card {
@@ -123,6 +124,94 @@ h1 {
   color: #64748b;
 }
 
+.alert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 1rem;
+  color: #991b1b;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #dbeafe;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  padding: 1.25rem;
+}
+
+.panelHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.health {
+  background: #eff6ff;
+  border-radius: 999px;
+  color: #1d4ed8;
+  font-weight: 800;
+  padding: 0.5rem 0.8rem;
+}
+
+.serverList {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.serverRow {
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr auto 260px;
+  padding: 1rem;
+}
+
+.serverRow div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.serverRow small {
+  color: #64748b;
+}
+
+.status {
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.4rem 0.7rem;
+}
+
+.status-online {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-offline {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-degraded {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-unknown {
+  background: #e2e8f0;
+  color: #334155;
+}
+
 @media (max-width: 900px) {
   .shell {
     grid-template-columns: 1fr;
@@ -133,6 +222,17 @@ h1 {
   }
 
   .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panelHeader {
+    align-items: flex-start;
+    gap: 1rem;
+    flex-direction: column;
+  }
+
+  .serverRow {
+    align-items: flex-start;
     grid-template-columns: 1fr;
   }
 }

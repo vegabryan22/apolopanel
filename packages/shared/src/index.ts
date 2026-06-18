@@ -5,6 +5,20 @@ export type ServerSummary = {
   name: string;
   hostname: string;
   status: ServerStatus;
+  agentEndpoint: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateServerInput = {
+  name: string;
+  hostname: string;
+  agentEndpoint?: string | null;
+};
+
+export type ServerDetails = ServerSummary & {
+  description: string | null;
+  lastSeenAt: string | null;
 };
 
 export type AgentMetrics = {
@@ -19,6 +33,7 @@ export type AgentMetrics = {
     usedGb: number;
     totalGb: number;
   };
+  uptimeSeconds: number;
 };
 
 export type AuditEvent = {
@@ -29,4 +44,28 @@ export type AuditEvent = {
   resourceId: string;
   result: "success" | "failure";
   createdAt: string;
+};
+
+export type DashboardSummary = {
+  servers: {
+    total: number;
+    online: number;
+    offline: number;
+    degraded: number;
+    unknown: number;
+  };
+  domains: {
+    total: number;
+  };
+  websites: {
+    total: number;
+  };
+  backups: {
+    total: number;
+  };
+};
+
+export type ApiError = {
+  error: string;
+  message: string;
 };

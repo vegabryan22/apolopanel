@@ -13,8 +13,8 @@
 - Login.
 - Dashboard.
 - Layout administrativo.
-- Listado de servidores.
-- Métricas simuladas.
+- Listado de servidores conectado a la API.
+- Métricas básicas reales desde el agente.
 - Auditoría básica.
 
 ## Fase 2: VPS real

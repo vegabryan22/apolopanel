@@ -24,3 +24,11 @@ pnpm test
 - API: `4000`
 - Agent: `4100`
 - PostgreSQL: `5432`
+
+## Endpoints rápidos
+
+- `http://localhost:3000`
+- `http://localhost:4000/health`
+- `http://localhost:4000/dashboard`
+- `http://localhost:4000/servers`
+- `http://localhost:4100/metrics`
