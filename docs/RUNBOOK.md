@@ -1,0 +1,25 @@
+# Runbook
+
+## Desarrollo local
+
+1. Copiar `.env.example` a `.env`.
+2. Instalar dependencias con `pnpm install`.
+3. Levantar PostgreSQL con `docker compose up -d`.
+4. Ejecutar `pnpm dev`.
+
+## Validación
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm format:check
+pnpm test
+```
+
+## Puertos
+
+- Web: `3000`
+- API: `4000`
+- Agent: `4100`
+- PostgreSQL: `5432`
+
