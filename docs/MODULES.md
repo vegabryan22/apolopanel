@@ -24,6 +24,9 @@ Certificados, renovación automática y estado.
 
 Bases de datos, usuarios, permisos y backups.
 
+ApoloPanel usa PostgreSQL internamente. Este módulo administra MySQL/MariaDB para
+sitios y clientes, sin mezclar datos internos del panel con datos de hosting.
+
 ## Backups
 
 Planes, ejecuciones, retención y restauración.

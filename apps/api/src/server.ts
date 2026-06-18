@@ -1,14 +1,14 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
-import { randomUUID } from "node:crypto";
 import type {
   AuditEvent,
   CreateServerInput,
   DashboardSummary,
-  ServerDetails,
   ServerStatus,
   ServerSummary
 } from "@apolopanel/shared";
+import { disconnectDatabase, prisma } from "./database.js";
+import { toAuditEvent, toPrismaServerStatus, toServerDetails } from "./mappers.js";
 
 const port = Number(process.env.API_PORT ?? 4000);
 
@@ -16,58 +16,9 @@ const app = Fastify({
   logger: true
 });
 
-const now = new Date().toISOString();
-
-const servers = new Map<string, ServerDetails>([
-  [
-    "srv_001",
-    {
-      id: "srv_001",
-      name: "VPS Principal",
-      hostname: "vps.local",
-      status: "unknown",
-      agentEndpoint: "http://127.0.0.1:4100",
-      description: "Servidor inicial para desarrollo local.",
-      lastSeenAt: null,
-      createdAt: now,
-      updatedAt: now
-    }
-  ]
-]);
-
-const auditEvents: AuditEvent[] = [];
-
 await app.register(cors, {
   origin: true
 });
-
-function createId(prefix: string) {
-  return `${prefix}_${randomUUID().replaceAll("-", "").slice(0, 12)}`;
-}
-
-function addAuditEvent(action: string, resourceType: string, resourceId: string) {
-  auditEvents.unshift({
-    id: createId("aud"),
-    actorId: "system",
-    action,
-    resourceType,
-    resourceId,
-    result: "success",
-    createdAt: new Date().toISOString()
-  });
-}
-
-function toServerSummary(server: ServerDetails): ServerSummary {
-  return {
-    id: server.id,
-    name: server.name,
-    hostname: server.hostname,
-    status: server.status,
-    agentEndpoint: server.agentEndpoint,
-    createdAt: server.createdAt,
-    updatedAt: server.updatedAt
-  };
-}
 
 function validateServerStatus(status: unknown): status is ServerStatus {
   return (
@@ -111,27 +62,66 @@ function validateCreateServerInput(payload: unknown): CreateServerInput {
   };
 }
 
+async function addAuditEvent(action: string, resourceType: string, resourceId: string) {
+  await prisma.auditEvent.create({
+    data: {
+      action,
+      resourceType,
+      resourceId,
+      serverId: resourceType === "server" ? resourceId : null
+    }
+  });
+}
+
+async function ensureDefaultServer() {
+  const totalServers = await prisma.server.count();
+
+  if (totalServers > 0) {
+    return;
+  }
+
+  const server = await prisma.server.create({
+    data: {
+      name: "VPS Principal",
+      hostname: "vps.local",
+      agentEndpoint: "http://127.0.0.1:4100",
+      description: "Servidor inicial para desarrollo local."
+    }
+  });
+
+  await addAuditEvent("server.seeded", "server", server.id);
+}
+
 app.get("/health", async () => ({
   status: "ok",
   service: "api"
 }));
 
 app.get("/dashboard", async (): Promise<DashboardSummary> => {
-  const allServers = Array.from(servers.values());
+  const [total, online, offline, degraded, unknown, domains, websites] =
+    await Promise.all([
+      prisma.server.count(),
+      prisma.server.count({ where: { status: "ONLINE" } }),
+      prisma.server.count({ where: { status: "OFFLINE" } }),
+      prisma.server.count({ where: { status: "DEGRADED" } }),
+      prisma.server.count({ where: { status: "UNKNOWN" } }),
+      prisma.domain.count(),
+      prisma.website.count()
+    ]);
 
   return {
     servers: {
-      total: allServers.length,
-      online: allServers.filter((server) => server.status === "online").length,
-      offline: allServers.filter((server) => server.status === "offline").length,
-      degraded: allServers.filter((server) => server.status === "degraded").length,
-      unknown: allServers.filter((server) => server.status === "unknown").length
+      total,
+      online,
+      offline,
+      degraded,
+      unknown
     },
     domains: {
-      total: 0
+      total: domains
     },
     websites: {
-      total: 0
+      total: websites
     },
     backups: {
       total: 0
@@ -139,13 +129,22 @@ app.get("/dashboard", async (): Promise<DashboardSummary> => {
   };
 });
 
-app.get(
-  "/servers",
-  async (): Promise<ServerSummary[]> => Array.from(servers.values()).map(toServerSummary)
-);
+app.get("/servers", async (): Promise<ServerSummary[]> => {
+  const servers = await prisma.server.findMany({
+    orderBy: {
+      createdAt: "asc"
+    }
+  });
+
+  return servers.map(toServerDetails);
+});
 
 app.get<{ Params: { id: string } }>("/servers/:id", async (request, reply) => {
-  const server = servers.get(request.params.id);
+  const server = await prisma.server.findUnique({
+    where: {
+      id: request.params.id
+    }
+  });
 
   if (!server) {
     return reply.code(404).send({
@@ -154,29 +153,23 @@ app.get<{ Params: { id: string } }>("/servers/:id", async (request, reply) => {
     });
   }
 
-  return server;
+  return toServerDetails(server);
 });
 
 app.post("/servers", async (request, reply) => {
   try {
     const input = validateCreateServerInput(request.body);
-    const timestamp = new Date().toISOString();
-    const server: ServerDetails = {
-      id: createId("srv"),
-      name: input.name,
-      hostname: input.hostname,
-      status: "unknown",
-      agentEndpoint: input.agentEndpoint ?? null,
-      description: null,
-      lastSeenAt: null,
-      createdAt: timestamp,
-      updatedAt: timestamp
-    };
+    const server = await prisma.server.create({
+      data: {
+        name: input.name,
+        hostname: input.hostname,
+        agentEndpoint: input.agentEndpoint ?? null
+      }
+    });
 
-    servers.set(server.id, server);
-    addAuditEvent("server.created", "server", server.id);
+    await addAuditEvent("server.created", "server", server.id);
 
-    return reply.code(201).send(server);
+    return reply.code(201).send(toServerDetails(server));
   } catch (error) {
     return reply.code(400).send({
       error: "validation_error",
@@ -186,7 +179,11 @@ app.post("/servers", async (request, reply) => {
 });
 
 app.patch<{ Params: { id: string } }>("/servers/:id/status", async (request, reply) => {
-  const server = servers.get(request.params.id);
+  const server = await prisma.server.findUnique({
+    where: {
+      id: request.params.id
+    }
+  });
 
   if (!server) {
     return reply.code(404).send({
@@ -204,22 +201,43 @@ app.patch<{ Params: { id: string } }>("/servers/:id/status", async (request, rep
     });
   }
 
-  const updatedServer: ServerDetails = {
-    ...server,
-    status: body.status,
-    lastSeenAt: body.status === "online" ? new Date().toISOString() : server.lastSeenAt,
-    updatedAt: new Date().toISOString()
-  };
+  const updatedServer = await prisma.server.update({
+    where: {
+      id: server.id
+    },
+    data: {
+      status: toPrismaServerStatus(body.status),
+      lastSeenAt: body.status === "online" ? new Date() : server.lastSeenAt
+    }
+  });
 
-  servers.set(server.id, updatedServer);
-  addAuditEvent("server.status_updated", "server", server.id);
+  await addAuditEvent("server.status_updated", "server", server.id);
 
-  return updatedServer;
+  return toServerDetails(updatedServer);
 });
 
-app.get("/audit-events", async (): Promise<AuditEvent[]> => auditEvents.slice(0, 50));
+app.get("/audit-events", async (): Promise<AuditEvent[]> => {
+  const events = await prisma.auditEvent.findMany({
+    orderBy: {
+      createdAt: "desc"
+    },
+    take: 50
+  });
+
+  return events.map(toAuditEvent);
+});
+
+await ensureDefaultServer();
 
 await app.listen({
   port,
   host: "0.0.0.0"
 });
+
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.on(signal, async () => {
+    await app.close();
+    await disconnectDatabase();
+    process.exit(0);
+  });
+}

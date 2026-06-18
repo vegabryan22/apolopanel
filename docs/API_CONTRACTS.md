@@ -33,6 +33,8 @@ Respuesta:
 ]
 ```
 
+Los servidores se persisten en PostgreSQL mediante Prisma.
+
 `GET /servers/:id`
 
 Respuesta:

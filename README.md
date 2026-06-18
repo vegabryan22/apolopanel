@@ -40,6 +40,9 @@ Versión inicial de arquitectura y scaffold profesional.
 
 ```bash
 pnpm install
+docker compose up -d
+pnpm db:generate
+pnpm db:migrate
 pnpm dev
 pnpm lint
 pnpm typecheck
@@ -50,6 +53,8 @@ Si `pnpm` no está instalado globalmente, usa:
 
 ```bash
 npx pnpm@9.12.0 install
+npx pnpm@9.12.0 db:generate
+npx pnpm@9.12.0 db:migrate
 npx pnpm@9.12.0 dev
 ```
 

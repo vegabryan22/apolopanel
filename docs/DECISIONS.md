@@ -30,3 +30,14 @@ Consecuencia:
 
 - Menos errores en contratos.
 - Mayor costo inicial, pero mejor mantenibilidad.
+
+## ADR-004: PostgreSQL interno y MySQL administrado
+
+PostgreSQL se usa como base interna de ApoloPanel. MySQL/MariaDB se administra
+como recurso de hosting para clientes y aplicaciones.
+
+Consecuencia:
+
+- Separación clara entre datos del panel y datos de clientes.
+- Backups y permisos más fáciles de aislar.
+- El agente debe manejar operaciones MySQL/MariaDB con allowlist.

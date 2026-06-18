@@ -10,5 +10,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: apolopanel_root
+      MYSQL_DATABASE: hosting_example
+      MYSQL_USER: hosting_user
+      MYSQL_PASSWORD: hosting_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
 volumes:
   postgres_data:
+  mysql_data:

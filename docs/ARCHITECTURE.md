@@ -33,6 +33,13 @@ Responsabilidades:
 - Auditoría.
 - Comunicación segura con agentes.
 
+Persistencia interna:
+
+- PostgreSQL almacena usuarios, servidores, dominios, sitios, auditoría, jobs y
+  configuración propia de ApoloPanel.
+- Las bases MySQL/MariaDB de clientes no deben mezclarse con la base interna del
+  panel.
+
 ### Agent
 
 Servicio instalado en cada VPS administrado.
@@ -43,6 +50,12 @@ Responsabilidades:
 - Administrar servicios permitidos.
 - Ejecutar tareas idempotentes.
 - Reportar estado y resultados a la API.
+
+### Bases de datos administradas
+
+MySQL/MariaDB son servicios administrados por ApoloPanel para sitios y clientes.
+El panel guarda metadatos en PostgreSQL y delega la creación real de bases,
+usuarios, permisos, backups y restauraciones al agente del VPS.
 
 ## Flujo recomendado
 
