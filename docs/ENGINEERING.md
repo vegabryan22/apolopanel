@@ -37,4 +37,3 @@ Una tarea se considera lista cuando:
 - No rompe lint/typecheck.
 - Incluye documentación si cambia comportamiento.
 - Registra eventos relevantes si afecta infraestructura.
-

@@ -45,4 +45,3 @@ Debe registrarse:
 - IP/origen.
 - Fecha.
 - Resultado.
-

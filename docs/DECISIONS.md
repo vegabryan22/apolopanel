@@ -30,4 +30,3 @@ Consecuencia:
 
 - Menos errores en contratos.
 - Mayor costo inicial, pero mejor mantenibilidad.
-

@@ -26,4 +26,3 @@
 - Roles mínimos.
 - Confirmación doble para acciones destructivas.
 - Backups antes de operaciones críticas.
-

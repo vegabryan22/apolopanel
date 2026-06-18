@@ -30,4 +30,3 @@ export type AuditEvent = {
   result: "success" | "failure";
   createdAt: string;
 };
-

@@ -31,4 +31,3 @@ Planes, ejecuciones, retención y restauración.
 ## Audit
 
 Registro de eventos administrativos.
-

@@ -46,6 +46,13 @@ pnpm typecheck
 pnpm test
 ```
 
+Si `pnpm` no está instalado globalmente, usa:
+
+```bash
+npx pnpm@9.12.0 install
+npx pnpm@9.12.0 dev
+```
+
 ## Documentación
 
 - `docs/ARCHITECTURE.md`
@@ -53,4 +60,3 @@ pnpm test
 - `docs/SECURITY_MODEL.md`
 - `docs/ENGINEERING.md`
 - `docs/API_CONTRACTS.md`
-

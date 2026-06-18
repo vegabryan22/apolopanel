@@ -13,4 +13,3 @@
 - No mezclar refactors grandes con features.
 - No introducir comandos privilegiados sin revisar el modelo de seguridad.
 - No agregar dependencias sin justificar su uso.
-

@@ -17,17 +17,19 @@ app.get("/health", async () => ({
   service: "api"
 }));
 
-app.get("/servers", async (): Promise<ServerSummary[]> => [
-  {
-    id: "srv_001",
-    name: "VPS Principal",
-    hostname: "vps.local",
-    status: "unknown"
-  }
-]);
+app.get(
+  "/servers",
+  async (): Promise<ServerSummary[]> => [
+    {
+      id: "srv_001",
+      name: "VPS Principal",
+      hostname: "vps.local",
+      status: "unknown"
+    }
+  ]
+);
 
 await app.listen({
   port,
   host: "0.0.0.0"
 });
-

@@ -14,4 +14,3 @@ Este proyecto administrará infraestructura real. Por eso, cualquier cambio que 
 - Ser idempotente cuando sea posible.
 - Registrar auditoría.
 - Evitar comandos shell arbitrarios.
-

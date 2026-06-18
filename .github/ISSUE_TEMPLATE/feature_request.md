@@ -17,4 +17,3 @@ labels: enhancement
 
 - [ ] Criterio 1
 - [ ] Criterio 2
-

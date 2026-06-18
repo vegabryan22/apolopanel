@@ -16,4 +16,3 @@ Describe el cambio.
 - [ ] Actualicé documentación si aplica.
 - [ ] No incluí secretos.
 - [ ] Revisé impacto de seguridad.
-

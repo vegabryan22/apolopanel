@@ -7,6 +7,8 @@
 3. Levantar PostgreSQL con `docker compose up -d`.
 4. Ejecutar `pnpm dev`.
 
+Si `pnpm` no está disponible globalmente, usar `npx pnpm@9.12.0` antes del comando.
+
 ## Validación
 
 ```bash
@@ -22,4 +24,3 @@ pnpm test
 - API: `4000`
 - Agent: `4100`
 - PostgreSQL: `5432`
-

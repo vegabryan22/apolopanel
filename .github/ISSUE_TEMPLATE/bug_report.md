@@ -18,4 +18,3 @@ Describe el problema.
 ## Resultado esperado
 
 ## Resultado actual
-

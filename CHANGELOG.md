@@ -10,4 +10,3 @@ El proyecto sigue Semantic Versioning.
 - Documentación de arquitectura, seguridad e ingeniería.
 - Apps base `web`, `api` y `agent`.
 - Paquete compartido `shared`.
-

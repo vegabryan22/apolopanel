@@ -17,4 +17,3 @@ Mientras el proyecto esté en `0.x`, pueden existir cambios internos incompatibl
 - `0.3.x`: dominios, sitios web y SSL.
 - `0.4.x`: bases de datos y backups.
 - `1.0.0`: versión estable para uso operativo.
-

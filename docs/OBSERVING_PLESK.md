@@ -31,4 +31,3 @@ Por cada pantalla:
 - Video corto navegando.
 - Lista manual de menús.
 - Export de configuración sin secretos.
-
